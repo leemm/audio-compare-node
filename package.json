@@ -1,0 +1,21 @@
+{
+  "name": "audio-compare-node",
+  "version": "1.0.0",
+  "description": "port of kdave/audio-compare",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "fpcalc",
+    "chromaprint",
+    "python"
+  ],
+  "type": "module",
+  "author": "leemm",
+  "license": "ISC",
+  "dependencies": {
+    "jsnumpy": "^1.1.10",
+    "simple-cli-parser": "^1.0.1"
+  }
+}
