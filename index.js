@@ -3,6 +3,8 @@
 import { accessSync, constants, readFileSync } from 'node:fs';
 import numpy from 'jsnumpy';
 import cli from 'simple-cli-parser';
+import bigInt from 'big-integer';
+import bin from 'dec-to-binary';
 
 const defaultOptions = {
     // seconds to sample audio file for
@@ -30,10 +32,6 @@ function fileExists(path) {
     }
 
     return found;
-}
-
-function bin(num) {
-    return (num >>> 0).toString();
 }
 
 function validate(config) {
@@ -85,46 +83,31 @@ function correlation(listx, listy) {
     if (listx.length > listy.length) {
         listx = listx.slice(0, listy.length);
     } else if (listx.length < listy.length) {
-        listy = listx.slice(0, listx.length);
+        listy = listy.slice(0, listx.length);
     }
 
     let covariance = 0;
 
     for (let i = 0; i < listx.length; i++){
-        covariance += 32 - bin(listx[i] ^ listy[i]).split('1').length - 1;
+        let xor = parseFloat(bigInt(listx[i]).xor(listy[i]).value, 10);
+        covariance += 32 - (bin.decimal(xor).split('1').length - 1);
     }
 
-    covariance = covariance / parseFloat(listx.lengthm, 10);
+    covariance = covariance / parseFloat(listx.length, 10);
 
     return covariance / 32;
 }
 
 // return cross correlation, with listy offset from listx
 function cross_correlation(listx, listy, offset) {
-    console.log('offset:', offset);
-
-    console.log('listx 1:', listx.length);
-    console.log('listy 1:', listy.length);
-
     if (offset > 0) {
         listx = listx.slice(offset);
-        listy = listy.slice(0, listx.lenth);
+        listy = listy.slice(0, listx.length);
     } else if (offset < 0) {
         offset = -offset;
         listy = listy.slice(offset);
-        listx = listx.slice(0, listy.lenth);
+        listx = listx.slice(0, listy.length);
     }
-
-    // if offset > 0:
-    //     listx = listx[offset:]
-    //     listy = listy[: len(listx)]
-    // elif offset < 0:
-    //     offset = -offset
-    //     listy = listy[offset:]
-    //     listx = listx[: len(listy)]
-
-    console.log('listx:', listx.length);
-    console.log('listy:', listy.length);
 
     if (Math.min(listx.length, listy.length) < options.min_overlap) {
         // Error checking in main program should prevent us from ever being able to get here.
@@ -153,8 +136,8 @@ function compareCorrelate(listx, listy, span, step) {
 
 // return index of maximum value in list
 function max_index(listx) {
-    const max_index = 0;
-    const max_value = listx[0];
+    let max_index = 0;
+    let max_value = listx[0];
 
     listx.map((value, i) => {
         if (value > max_value) { max_value = value; max_index = i; }

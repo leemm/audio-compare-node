@@ -15,6 +15,8 @@
   "author": "leemm",
   "license": "ISC",
   "dependencies": {
+    "big-integer": "^1.6.51",
+    "dec-to-binary": "^1.5.1",
     "jsnumpy": "^1.1.10",
     "simple-cli-parser": "^1.0.1"
   }
