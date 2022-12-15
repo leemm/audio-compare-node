@@ -174,3 +174,5 @@ export async function compare(config) {
 
     return await correlate(config.source, config.dest)
 }
+
+export default {};
