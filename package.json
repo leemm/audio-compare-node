@@ -1,19 +1,18 @@
 {
-  "name": "audio-compare-node",
+  "name": "audio-compare",
   "version": "1.0.0",
   "description": "port of kdave/audio-compare",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "scripts": {},
   "keywords": [
     "fpcalc",
     "chromaprint",
     "python"
   ],
   "type": "module",
-  "author": "leemm",
+  "author": "Lee M (leemmccormick@gmail.com)",
   "license": "ISC",
+  "repository": "https://github.com/leemm/audio-compare-node.git",
   "dependencies": {
     "big-integer": "^1.6.51",
     "dec-to-binary": "^1.5.1",
