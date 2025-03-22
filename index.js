@@ -18,6 +18,8 @@ const defaultOptions = {
     min_overlap: 20,
     // report match when cross correlation has a peak exceeding threshold
     threshold: 0.5,
+    // path to fpcalc binary
+    fpcalcPath: 'fpcalc',
 }
 
 let options;
@@ -41,9 +43,9 @@ function validate(config) {
 
     if (!config.source || !config.dest) {
         throw new Error('You need to supply config.source and config.dest');
-    } 
+    }
 
-    if (!fileExists(config.source)){
+    if (!fileExists(config.source)) {
         throw new Error('The file supplied for config.source does not exist or you do not have access');
     }
 
@@ -57,12 +59,12 @@ function validate(config) {
 async function calculate_fingerprints(filename) {
     let fpcalc_out;
 
-    if (fileExists(filename + '.fpcalc')){
+    if (fileExists(filename + '.fpcalc')) {
         console.log(`Found precalculated fingerprint for ${filename}`);
         fpcalc_out = readFileSync(filename, 'utf-8').split(/\r?\n/).join('');
     } else {
         console.log(`Calculating fingerprint by fpcalc for ${filename}`);
-        const content = await (new cli(['fpcalc', '-raw', '-length', options.sample_time.toString(), filename]));
+        const content = await (new cli([options.fpcalcPath, '-raw', '-length', options.sample_time.toString(), filename]));
         fpcalc_out = content.trim().replace('\\n', '').replace('\'', '');
     }
 
@@ -88,7 +90,7 @@ function correlation(listx, listy) {
 
     let covariance = 0;
 
-    for (let i = 0; i < listx.length; i++){
+    for (let i = 0; i < listx.length; i++) {
         let xor = parseFloat(bigInt(listx[i]).xor(listy[i]).value, 10);
         covariance += 32 - (bin.decimal(xor).split('1').length - 1);
     }
@@ -114,7 +116,7 @@ function cross_correlation(listx, listy, offset) {
         return;
         // throw Error('Overlap too small: %i' % min(len(listx), len(listy)))
     }
-    
+
     return correlation(listx, listy);
 }
 
@@ -142,7 +144,7 @@ function max_index(listx) {
     listx.map((value, i) => {
         if (value > max_value) { max_value = value; max_index = i; }
     });
-    
+
     return max_index;
 }
 
